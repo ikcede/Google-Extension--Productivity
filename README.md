@@ -1,11 +1,15 @@
+==============================
 Google-Extension--Productivity
 ==============================
 
-A prototype extension for keeping yourself on track
+DESCRIPTION:
+A prototype extension for keeping yourself on track:
+v0.2: While productivity is on, all pages will be filtered. While it is off, 
+no pages will be filtered.
 
-DevNotes:
-1. Keep track of websites 
-2. Tooltip for what you're supposed to be doing 
-3. Auto nonproductivity 
-4. Options page 
-5. popup.html for controlling tasks 
+INSTALLATION:
+To use, simply download the source into a folder, go to Chrome/settings/tools/extensions,
+turn on developer mode, click on Load unpacked extension, browse to the folder, and open it.
+
+Interface + options page to come.
+
