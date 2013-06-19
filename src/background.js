@@ -2,32 +2,49 @@
 
 // Note that the tab.onCreated listener also listens to iFrames...
 
+// Functions to deal with localStorage
+function open(dataStr) {
+	var str = localStorage[dataStr];
+	
+	if(!str || typeof(str) === "undefined") {
+		return {
+			prod:false,
+			time:-1,
+			timer:false,
+			unproductive:[]
+		};
+	} 
+	
+	else return JSON.parse(str);
+}
+
+function save(obj, dataStr) {
+	localStorage[dataStr] = JSON.stringify(obj);
+}
+
+/* Structure of the localStorage object
+
+prod: bool
+time: int (ms)
+timer: bool 
+unproductive: Array (of Strings)
+
+*/
+
+localStorage.removeItem("productive.ly");
+
 chrome.tabs.onCreated.addListener(function(tab) {
 
-	var str = localStorage["unproductiveTabs"];
-	if(typeof str == 'undefined') {
-		str = {};
-	}
-	else {
-		str = JSON.parse(localStorage["unproductiveTabs"]);
-	}
-	
-	if (typeof str[tab.id.toString()] == "undefined" ? false : str[tab.id.toString()] == "1") return;
+	var prod = open("productive.ly");
 
-	var x = confirm("Click OK if this frame is going to be productive.");
+	if(prod.prod) {
 	
-	if(!x) {
-	
-		str[tab.id.toString()] = "1";
-		localStorage["unproductiveTabs"] = JSON.stringify(str);
-		
 		chrome.tabs.insertCSS(
 			tab.id,
 			{   
-				code:"body{opacity:.4 !important;}"
+				code:"body{opacity:.2 !important;}"
 			}   
 		);
-		
 	}
 	
 });
@@ -35,57 +52,23 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 chrome.tabs.onActivated.addListener(function(tab){
 
-	var str = localStorage["unproductiveTabs"];
+	var prod = open("productive.ly");
 	
-	if(typeof str == 'undefined') {
-		return;
+	if(prod.prod) {
+		chrome.tabs.insertCSS(
+			tab.id,
+			{   
+				code:"body{opacity:.2 !important;}"
+			}   
+		);
 	}
 	else {
-		str = JSON.parse(localStorage["unproductiveTabs"]);
+		chrome.tabs.insertCSS(
+			tab.id,
+			{   
+				code:"body{opacity:1 !important;}"
+			}   
+		);
 	}
 	
-	if (typeof str[tab.tabId.toString()] == "undefined") {
-		return;
-	}
-	else {
-		if(str[tab.tabId.toString()] != "1") {
-			return;
-		}
-	}
-	
-	chrome.tabs.insertCSS(
-		tab.tabId,
-		{   
-			code:"body{opacity:.4 !important;}"
-		}   
-	);
-});
-
-chrome.tabs.onUpdated.addListener(function(tabId) {
-	
-	var str = localStorage["unproductiveTabs"];
-	
-	if(typeof str == 'undefined') {
-		return;
-	}
-	else {
-		str = JSON.parse(localStorage["unproductiveTabs"]);
-	}
-	
-	if (typeof str[tabId.toString()] == "undefined") {
-		return;
-	}
-	else {
-		if(str[tabId.toString()] != "1") {
-			return;
-		}
-	}
-	
-	chrome.tabs.insertCSS(
-		tabId,
-		{   
-			code:"body{opacity:.5 !important;}"
-		}   
-	);
-
 });

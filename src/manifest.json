@@ -1,11 +1,16 @@
 {
   "name": "Browsing Productivity",
-  "version": "0.1",
+  "version": "0.3",
   "manifest_version": 2,
   "description": "Prototype for keeping yourself on track.",
   "background": {
     "scripts": ["background.js"]
   },
+  "options_page": "options.html",
+  "browser_action": {
+    "default_icon": "iconminus.png",
+	"default_popup": "popupmain.html"
+  },
   "permissions": [
-	"tabs", "http://*/*", "background", "https://*/*"]
+	"tabs", "http://*/*", "background", "https://*/*", "*://*/*"]
 }

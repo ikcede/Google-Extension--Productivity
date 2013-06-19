@@ -1,0 +1,17 @@
+Dev notes
+
+TODO:
+
+Finish up background.js
+// Use different icons for different productivity levels
+	Now maintain them using ready function
+	
+Popup on new pages
+Create options page
+Create help section
+Create timer functionality
+Allow for infinite time
+Allow editing of unproductive list
+Create a lock
+
+Images/Icons for the app

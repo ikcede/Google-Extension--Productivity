@@ -1,0 +1,45 @@
+body {
+	text-align: center;
+	min-width: 225px;
+	font-family:Helvetica;
+}
+
+.divide {
+	border-top:1px solid lightgrey;
+	margin:5px 0 5px 0;
+}
+
+.info span {
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.info .small {
+	font-size:0.7em;
+	font-weight:normal;
+	
+	display:none;
+}
+
+#settimer {
+	color: rgb(160, 160, 160);
+	text-decoration:underline;
+	cursor:pointer;
+}
+	
+.on {
+	color: rgb(20, 190, 6);
+}
+
+.off {
+	color: rgb(190, 28, 6);
+}
+
+img {
+	cursor: pointer;
+}
+
+#timer-wrapper {
+	display:none;
+}
+
