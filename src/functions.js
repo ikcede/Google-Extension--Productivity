@@ -13,7 +13,12 @@ function open(dataStr) {
 	var str = localStorage[dataStr];
 	
 	if(!str || typeof(str) === "undefined") {
-		return {};
+		return {
+			prod:false,
+			time:-1,
+			timer:false,
+			unproductive:[]
+		};
 	} 
 	
 	else return JSON.parse(str);
@@ -21,6 +26,13 @@ function open(dataStr) {
 
 function save(obj, dataStr) {
 	localStorage[dataStr] = JSON.stringify(obj);
+}
+
+// Extracting a domain
+function extractDomain(urlStr) {
+	var loc = document.createElement('a');
+	loc.href = urlStr;
+	return loc.hostname;
 }
 
 // Events
@@ -35,6 +47,17 @@ $(document).on("click", "#flipprod", function() {
 		
 		prod.prod = false;
 		save(prod, "productive.ly");
+		
+		// Get the current tab
+		chrome.tabs.getSelected(null, function(tab) {
+			var dom = extractDomain(tab.url);
+			
+			// If it's unproductive
+			if(prod.unproductive.indexOf(dom) > -1) {
+				chrome.tabs.insertCSS(tab.id,{code:"body{opacity:1 !important;}"});
+			}
+		});
+		
 	}
 	// Already OFF
 	else {
@@ -43,24 +66,58 @@ $(document).on("click", "#flipprod", function() {
 		
 		prod.prod = true;
 		save(prod, "productive.ly");
+		
+		// Get the current tab
+		chrome.tabs.getSelected(null, function(tab) {
+			var dom = extractDomain(tab.url);
+			
+			// If it's unproductive
+			if(prod.unproductive.indexOf(dom) > -1) {
+				chrome.tabs.insertCSS(tab.id,{code:"body{opacity:.2 !important;}"});
+			}
+		});
 	}
 });
 
 $(document).on("click", "#flippage", function() {
-	// Already ON
-	if($("#page .flip").hasClass("on")) {
-		$("#page .flip").removeClass("on").addClass("off").text("Unproductive");
-	}
-	// Already OFF
-	else {
-		$("#page .flip").removeClass("off").addClass("on").text("Productive");
-	}
+	
+	// Get the current tab
+	chrome.tabs.getSelected(null, function(tab) {
+	
+		var dom = extractDomain(tab.url);
+	
+		// Open productivity object
+		var prod = open("productive.ly");
+
+		// Already Productive:
+		// Make unproductive and filter if productivity is ON
+		if($("#page .flip").hasClass("on")) {
+			$("#page .flip").removeClass("on").addClass("off").text("Unproductive");
+			if(prod.unproductive.indexOf(dom) < 0) {
+				prod.unproductive.push(dom);
+			}
+			if(prod.prod) {
+				chrome.tabs.insertCSS(tab.id,{code:"body{opacity:.2 !important;}"});
+			}
+		}
+		// Already Unproductive
+		// Make productive and unfilter
+		else {
+			$("#page .flip").removeClass("off").addClass("on").text("Productive");
+			if(prod.unproductive.indexOf(dom) > -1) {
+				prod.unproductive.splice(prod.unproductive.indexOf(dom), 1);
+			}
+			chrome.tabs.insertCSS(tab.id,{code:"body{opacity:1 !important;}"});
+		}
+		
+		save(prod, "productive.ly");
+	
+	});
 });
 
 $(document).on("click","#settimer", function() {
 	// Show timer
 	// Pause timer
-	
 });
 
 // Ready function
@@ -75,4 +132,14 @@ $(document).ready(function() {
 		$("#productivity .flip").removeClass("on").addClass("off").text("OFF");
 		chrome.browserAction.setIcon({path:"iconminus.png"});
 	}
+	
+	// Get the current tab
+	chrome.tabs.getSelected(null, function(tab) {
+		var dom = extractDomain(tab.url);
+	
+		// The page is unproductive
+		if(prod.unproductive.indexOf(dom) > -1) {
+			$("#page .flip").removeClass("on").addClass("off").text("Unproductive");
+		}
+	});
 });

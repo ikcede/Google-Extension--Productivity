@@ -22,53 +22,97 @@ function save(obj, dataStr) {
 	localStorage[dataStr] = JSON.stringify(obj);
 }
 
+// Function for extracting the domain of the page from a string
+function extractDomain(urlStr) {
+	var loc = document.createElement('a');
+	loc.href = urlStr;
+	return loc.hostname;
+}
+
 /* Structure of the localStorage object
 
 prod: bool
 time: int (ms)
 timer: bool 
-unproductive: Array (of Strings)
+unproductive: array of Strings
 
 */
 
-localStorage.removeItem("productive.ly");
+// localStorage.removeItem("productive.ly");
 
+// Tab events
 chrome.tabs.onCreated.addListener(function(tab) {
 
 	var prod = open("productive.ly");
 
-	if(prod.prod) {
-	
-		chrome.tabs.insertCSS(
-			tab.id,
-			{   
-				code:"body{opacity:.2 !important;}"
-			}   
-		);
-	}
+	// Get the current tab
+	chrome.tabs.getSelected(null, function(curTab) {
+		
+		// If productivity is on and the tab is not productive
+		if(prod.prod && prod.unproductive.indexOf(extractDomain(curTab.url)) > -1) {
+			chrome.tabs.insertCSS(
+				curTab.id,
+				{   
+					code:"body{opacity:.2 !important;}"
+				}   
+			);
+		}
+	});
 	
 });
 
+chrome.tabs.onUpdated.addListener(function(tab){
+
+	var prod = open("productive.ly");
+	
+	// Get the current tab
+	chrome.tabs.getSelected(null, function(curTab) {
+		
+		// If productivity is on and the tab is not productive
+		if(prod.prod && prod.unproductive.indexOf(extractDomain(curTab.url)) > -1) {
+			chrome.tabs.insertCSS(
+				curTab.id,
+				{   
+					code:"body{opacity:.2 !important;}"
+				}   
+			);
+		}
+		else {
+			chrome.tabs.insertCSS(
+				curTab.id,
+				{   
+					code:"body{opacity:1 !important;}"
+				}   
+			);
+		}
+	});
+	
+});
 
 chrome.tabs.onActivated.addListener(function(tab){
 
 	var prod = open("productive.ly");
 	
-	if(prod.prod) {
-		chrome.tabs.insertCSS(
-			tab.id,
-			{   
-				code:"body{opacity:.2 !important;}"
-			}   
-		);
-	}
-	else {
-		chrome.tabs.insertCSS(
-			tab.id,
-			{   
-				code:"body{opacity:1 !important;}"
-			}   
-		);
-	}
+	// Get the current tab
+	chrome.tabs.getSelected(null, function(curTab) {
+		
+		// If productivity is on and the tab is not productive
+		if(prod.prod && prod.unproductive.indexOf(extractDomain(curTab.url)) > -1) {
+			chrome.tabs.insertCSS(
+				curTab.id,
+				{   
+					code:"body{opacity:.2 !important;}"
+				}   
+			);
+		}
+		else {
+			chrome.tabs.insertCSS(
+				curTab.id,
+				{   
+					code:"body{opacity:1 !important;}"
+				}   
+			);
+		}
+	});
 	
 });
