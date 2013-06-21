@@ -11,7 +11,6 @@ unproductive: Array (of Strings)
 // Functions to deal with localStorage
 function open(dataStr) {
 	var str = localStorage[dataStr];
-	
 	if(!str || typeof(str) === "undefined") {
 		return {
 			prod:false,
@@ -20,7 +19,6 @@ function open(dataStr) {
 			unproductive:[]
 		};
 	} 
-	
 	else return JSON.parse(str);
 }
 
@@ -52,7 +50,7 @@ $(document).on("click", "#flipprod", function() {
 		chrome.tabs.getSelected(null, function(tab) {
 			var dom = extractDomain(tab.url);
 			
-			// If it's unproductive
+			// If it's unproductive: remove from blocked list and unblock
 			if(prod.unproductive.indexOf(dom) > -1) {
 				chrome.tabs.insertCSS(tab.id,{code:"body{opacity:1 !important;}"});
 			}
@@ -71,7 +69,7 @@ $(document).on("click", "#flipprod", function() {
 		chrome.tabs.getSelected(null, function(tab) {
 			var dom = extractDomain(tab.url);
 			
-			// If it's unproductive
+			// If it's unproductive: block it and add to unproductive list
 			if(prod.unproductive.indexOf(dom) > -1) {
 				chrome.tabs.insertCSS(tab.id,{code:"body{opacity:.2 !important;}"});
 			}

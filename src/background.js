@@ -39,6 +39,7 @@ unproductive: array of Strings
 */
 
 // localStorage.removeItem("productive.ly");
+// var tabs = [];
 
 // Tab events
 chrome.tabs.onCreated.addListener(function(tab) {
@@ -54,8 +55,9 @@ chrome.tabs.onCreated.addListener(function(tab) {
 				curTab.id,
 				{   
 					code:"body{opacity:.2 !important;}"
-				}   
+				}
 			);
+			//tabs.push(curTab.id);
 		}
 	});
 	
@@ -70,20 +72,16 @@ chrome.tabs.onUpdated.addListener(function(tab){
 		
 		// If productivity is on and the tab is not productive
 		if(prod.prod && prod.unproductive.indexOf(extractDomain(curTab.url)) > -1) {
-			chrome.tabs.insertCSS(
-				curTab.id,
-				{   
-					code:"body{opacity:.2 !important;}"
-				}   
-			);
+			// if(tabs.indexOf(curTab.id) < 0) {
+				chrome.tabs.insertCSS(curTab.id,{code:"body{opacity:.2 !important;}"});
+				//tabs.push(curTab.id);
+			// }
 		}
 		else {
-			chrome.tabs.insertCSS(
-				curTab.id,
-				{   
-					code:"body{opacity:1 !important;}"
-				}   
-			);
+			// if(tabs.indexOf(curTab.id) > -1) {
+				chrome.tabs.insertCSS(curTab.id,{code:"body{opacity:1 !important;}"});
+			//	tabs.splice(tabs.indexOf(curTab.id),1);
+			//}
 		}
 	});
 	
@@ -98,20 +96,16 @@ chrome.tabs.onActivated.addListener(function(tab){
 		
 		// If productivity is on and the tab is not productive
 		if(prod.prod && prod.unproductive.indexOf(extractDomain(curTab.url)) > -1) {
-			chrome.tabs.insertCSS(
-				curTab.id,
-				{   
-					code:"body{opacity:.2 !important;}"
-				}   
-			);
+			// if(tabs.indexOf(curTab.id) < 0) {
+				chrome.tabs.insertCSS(curTab.id,{code:"body{opacity:.2 !important;}"});
+				//tabs.push(curTab.id);
+			// }
 		}
 		else {
-			chrome.tabs.insertCSS(
-				curTab.id,
-				{   
-					code:"body{opacity:1 !important;}"
-				}   
-			);
+			// if(tabs.indexOf(curTab.id) > -1) {
+				chrome.tabs.insertCSS(curTab.id,{code:"body{opacity:1 !important;}"});
+			//	tabs.splice(tabs.indexOf(curTab.id),1);
+			//}
 		}
 	});
 	
